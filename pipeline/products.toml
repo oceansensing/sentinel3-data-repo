@@ -1,0 +1,70 @@
+# What this repository publishes: Sentinel-3 OLCI ocean color, and nothing
+# else.
+#
+# One product today — the seven-day merged chlorophyll-a composite — and the
+# HAB indicators built on it are expected to join it here rather than
+# anywhere else. `PLAN.md` says why they are separate products with their own
+# currency rather than one layer that means three things.
+#
+# **Why its own repository** (`DECISIONS.md` D1): one upstream, one fault
+# domain, one storage budget against the 1 GB Pages cap. A cloudy fortnight
+# over the Atlantic must not hold back the currents, and HYCOM's outages must
+# not hold back ocean color. The two failure modes are unrelated and should
+# not share a publish gate.
+#
+# Two rules inherited from the ESPC siblings, both learned the hard way there:
+#
+# - **Every `roots` entry here must be one the site's `test-schema.mjs
+#   --roots` publishes.** The orchestrator exits 2 on a root declared here
+#   that the contract does not know, and stops the publish. It does *not*
+#   fail on the reverse — a contract root this repository has no product for
+#   is the ordinary case, because three other origins own most of them.
+# - **A product that leaves takes its files with it.** The stage is seeded
+#   from the last publish, so a root a pipeline stops writing is carried
+#   forward for ever.
+
+# **The paths are relative to the site checkout, not to this workspace.** The
+# orchestrator runs these with the site checkout as their working directory,
+# so `site/scripts/...` would look right and resolve to nothing.
+[contract]
+check = ["node", "scripts/test-schema.mjs"]
+roots = ["node", "scripts/test-schema.mjs", "--roots"]
+
+[defaults]
+timeout_minutes = 30
+
+# **Its own lane, and the reason is the upstream and not the schedule.** A
+# lane is a lock: two steps sharing one never run together. Ocean color talks
+# to CoastWatch's ERDDAP, which no other step here touches, so it contends
+# with nothing — but naming the lane after the SERVER rather than the product
+# is what keeps that true when a second ERDDAP product lands beside it.
+[steps.color]
+cmd = ["python3", "scripts/fetch-ocean-color.py", "--only=chl-s3"]
+lane = "erddap"
+
+[products.chl-s3]
+title = "Sentinel-3 OLCI chlorophyll-a, 7-day composite"
+step = "color"
+roots = ["chl-s3.json", "chlage-s3.json"]
+writes = ["chl-s3*.json", "chlage-s3*.json"]
+# **Days, not hours, and that is the upstream rather than this pipeline.**
+# `max_age_hours` measures the READER's distance from the newest published
+# valid time. A Sentinel-3 composite's valid time is its newest overpass, and
+# CoastWatch publishes those two to five days after the fact — so this product
+# is *born* about 48 hours old and nothing here can make it younger. 96 hours
+# absorbs the nominal latency plus one missed day; past that, something real
+# has stopped. Measured 2026-08-31: S-3A at 2 days, S-3B at 5.
+max_age_hours = 96
+namespace = ["python3", "scripts/fetch-ocean-color.py", "--namespace", "--only=chl-s3"]
+
+# The tile tier is the product, not an optimization of it (D6). The overview
+# is 0.6 MB and the tiles are ~200 MB at the instrument's own 278 m; a reader
+# zoomed into the Bay is reading tiles, and the overview exists so the first
+# paint is not a 200 MB download.
+[products.chl-s3.tiles]
+build = ["python3", "scripts/fetch-ocean-color.py", "--tiles", "--only=chl-s3"]
+key = ["python3", "scripts/fetch-ocean-color.py", "--tile-key", "--only=chl-s3"]
+cache = "chl-tiles"
+match = [
+  ["tiles-chl-s3", "chl-s3.json"],
+]

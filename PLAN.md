@@ -133,6 +133,57 @@ otherwise attractive.
 
 ---
 
+### 3. What the build costs, measured 2026-08-31
+
+The measurement Open item 2 was waiting for, taken against the live upstream
+on the day D6 was decided.
+
+| | measured |
+| --- | --- |
+| native frame, whole sector | 6150 × 8030 = 49,384,500 cells |
+| one native frame over the wire | **188.5 MB in 10.7 s** (~17 MB/s), no chunking |
+| frames in a 7-day window | **9** — S-3A 7, S-3B 2 |
+| upstream per build | ~1.7 GB, ~96 s of transfer |
+| published, native 0.0025° | ~234 MB at 4.98 bytes/cell |
+| published, 0.05° overview | 0.6 MB |
+| coverage vs observable water | **76.8%** |
+| per-cell freshest age | median 2 d, p90 4 d, max 6 d |
+
+**The most consequential number is the 10.7 s.** The design nearly went to
+0.005° on the assumption that a 188 MB request would time out and force a
+chunked fetcher. It does not, and measuring it before writing the design is
+the only reason native was affordable. **Memory, not transfer, is the
+constraint that remains**: nine native frames stacked for a median is 1.8 GB
+of float32, so the fetcher works in horizontal bands — a sixth of the sector
+at a time holds ~300 MB.
+
+**S-3B runs further behind than the founding record says.** Latency was
+recorded as 2–4 days for the pair; on 2026-08-31 S-3A was at 2026-08-29
+(2 days) and **S-3B at 2026-08-26 (5 days)**. That is why a 7-day window held
+9 frames and not 14 — S-3B contributed 2. The merge is still worth what D4
+measured, but a reader of that entry should not expect seven frames each.
+
+### Five things that will bite a fetcher, not two
+
+The founding record numbers two above and names a third in prose; two more
+were paid for on 2026-08-31. All five are numbered here so none hides in a
+sentence.
+
+3. **ERDDAP 403s the default Python `urllib` user agent.** `curl` is fine;
+   `requests` with an explicit UA is fine. The failure is a bare
+   `HTTP Error 403: Forbidden` with no hint. *(Recorded 2026-08-30.)*
+4. **`curl` glob-expands `[` and `]`.** A griddap query pasted into `curl`
+   without `-g` or percent-encoding returns an empty body and **exit 0** — no
+   error, nothing to read. It looks exactly like a dataset that has gone away.
+5. **Subset by INDEX, not by value.** The advertised extent rounds: latitude
+   runs to **45.18625**, not the 45.19 quoted above, and a request for
+   `(45.19)` is refused with a message about the axis maximum. Index form —
+   `[0:1:6149]` — cannot round wrong, and does not move when the upstream
+   re-grids by a hair. The same class of trap as the sibling's off-grid region
+   edge, which held a whole publish tree for an afternoon.
+
+---
+
 ## The decisions this supports
 
 **Four of these landed as `DECISIONS.md` D1–D4 on 2026-08-30** — its own
@@ -141,7 +192,7 @@ merging 3A with 3B. What follows is the reasoning behind them plus the part
 that is still only a recommendation. **The numbering below is deliberately
 NOT D-anything**, so it cannot be mistaken for the decision index.
 
-### Recommendation 1: seven days for the composite window (NOT decided)
+### Recommendation 1: seven days for the composite window (landed as D5)
 
 **7 days is where the marginal return falls off**, and it is also what
 CoastWatch itself publishes for this region, which means a reader comparing
@@ -186,7 +237,7 @@ to invent:
    CoastWatch also publishes a Chesapeake 7-day climatology,
    `noaacwecnOLCImultisensorCHLeastcoast7DayClim`, as a ready baseline.
 2. **CyAN Cyanobacteria Index** — EPA/NASA/NOAA/USGS, OLCI-derived, for lakes
-   and estuaries. The Sentinel-3 phase concluded in 2024 in favour of
+   and estuaries. The Sentinel-3 phase concluded in 2024 in favor of
    Sentinel-2 and the data continues to be published and reprocessed
    annually — so **treat its latency as unverified**; this record has not
    measured it.
@@ -251,20 +302,26 @@ Recorded because it is the argument for the effort being small.
   that leaves takes its files with it.
 - **The doc doctrine applies, and this repository is inside it.** It carries
   `README.md`, `CLAUDE.md`, `PLAN.md` and `DECISIONS.md`, with the identical
-  `DOC-DOCTRINE v1` block held byte-equal across all five by the site's
+  `DOC-DOCTRINE v1` block held byte-equal across all **eight** by the site's
   `check:docs` (written 2026-08-30). Adding it moved the doctrine's own count
-  from four to five, and the site's sibling list with it.
-- **It is the second repository of five to carry a `DECISIONS.md`.** Only
-  `oceanlet.js` had one; the site and both other data repositories do not,
-  measured 2026-08-30. The doctrine says all of them should, so that is a gap
-  in three repositories rather than a precedent to follow here.
+  from four to five, and the site's sibling list with it; the currents/fields
+  split later that day took it to eight.
+- **~~It is the second repository of five to carry a `DECISIONS.md`~~ —
+  CORRECTED 2026-08-31: all eight carry one.** When this was written only
+  `oceanlet.js` and this repository had one, and it called that a gap in three
+  others. The gap closed the next day, and `check:docs` gained a rule
+  requiring a `DECISIONS.md` **tracked in git** in every one of the eight — so
+  it is no longer a gap to note but a gate to keep green.
 
 ---
 
 ## Open
 
-1. **Composite length** — 7 days proposed and measured; the owner's call.
-2. **Published extent and resolution** — waiting on a byte measurement.
+1. ~~**Composite length**~~ — **CLOSED 2026-08-31 as D5**: seven days.
+2. ~~**Published extent and resolution**~~ — **CLOSED 2026-08-31 as D6**:
+   Sector FI whole at native 0.0025°, tiles under a 0.05° overview, values
+   linear at two decimals. The byte measurement it waited for is in
+   "What the build costs".
 3. **Which HAB indicator** — D-3 above; anomaly recommended first.
 4. **Whether to pursue the node's `chl_switch`** — an email, not a scraper.
 5. **Archive or not** — the upstream keeps 90 days and this repository would

@@ -77,10 +77,66 @@ One-way in the file shape, like D2: a merged product's provenance is
 per-pixel, not per-file. A reader asking "which satellite saw this" needs an
 answer the format has to carry, and adding that later is a migration.
 
+## D5 — 2026-08-31 — The composite window is seven days
+
+The owner's call, taking `PLAN.md`'s Recommendation 1 as measured.
+
+Seven days is where the marginal return falls off, and it is the window
+CoastWatch itself publishes for this region, so a reader comparing against
+the official product compares like with like. Re-measured on the day of the
+decision against a different window and a different denominator: **76.8% of
+observable water**, where the founding measurement said 74.2%. Two
+independent samples either side of three quarters is the strongest statement
+this record can make about a number that moves with the season.
+
+What the window costs, stated because it is the whole trade: the trailing
+edge is a week old, and **a composite must not lie about its own age**. The
+product therefore publishes a per-cell age beside the value — measured at
+this window as median 2 days, p90 4, max 6.
+
+One-way in the file shape: the window is baked into every published cell, and
+changing it later re-dates every pixel a reader may have already acted on.
+Widening it is cheap in machinery and expensive in trust.
+
+## D6 — 2026-08-31 — Sector FI whole, at the instrument's own 278 m
+
+The owner's call on a byte measurement, which is what `PLAN.md`'s Open item 2
+was waiting for. **Published at native 0.0025° across the entire sector, with
+no resolution gaps**, as a tile tier under a 0.05° whole-sector overview.
+
+The numbers it was decided on, all measured 2026-08-31:
+
+| | cells | published |
+| --- | --- | --- |
+| overview, 0.05° | 123,816 | 0.6 MB |
+| tiles, 0.0025° (chosen) | 49,384,500 | ~234 MB |
+| 0.005° considered | 12,346,125 | ~59 MB |
+| 0.01° considered | 3,088,304 | ~15 MB |
+
+**The argument against native turned out to be false, and it is recorded
+because it nearly decided this the other way.** The concern was that a
+198 MB single-frame request would time out and force a chunked fetcher. It
+does not: the full 6150×8030 native frame returns in **10.7 s, 188.5 MB**,
+about 17 MB/s, with no chunking. Measured before the design was written,
+not after it failed.
+
+**Values are stored linear at two decimals** — 4.98 bytes/cell. Chlorophyll
+is log-distributed over 0.01–500 mg m⁻³, so the one-decimal encoding the
+model fields use would flatten every open-ocean value to 0.1. Two decimals
+keep 0.08 distinct from 0.09 and stop short of the third digit, which is
+finer than the retrieval's own uncertainty. **Not log10**, though that is how
+chlorophyll is conventionally drawn: a stored logarithm is a contract detail
+every consumer must remember to undo, and the ones that forget fail quietly.
+
+One-way on both counts, in the first sense this file names: resolution and
+encoding are the shape readers code against. Coarsening later strands
+anything built on the detail; changing the encoding silently changes every
+number in every file.
+
 ## Open, and not decided here
 
-Listed so nothing above is read as settling them: the composite length
-(7 days recommended), the published extent and resolution (waiting on a byte
-measurement), which HAB indicator to build first (chlorophyll anomaly
-recommended), and whether to accumulate an archive beyond the upstream's
-90-day rolling window. All are `PLAN.md`'s "Open" section.
+Listed so nothing above is read as settling them: which HAB indicator to
+build first (chlorophyll anomaly recommended), and whether to accumulate an
+archive beyond the upstream's 90-day rolling window. Both are `PLAN.md`'s
+"Open" section. **D5 and D6 closed the first two of the four that stood
+here**, on 2026-08-31.
