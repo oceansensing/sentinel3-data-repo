@@ -174,7 +174,7 @@ anomaly baseline built from its own history rather than a published
 climatology — has to be accumulated HERE. There is no going back for it
 later.
 
-### Two rules inherited from the sibling data repositories
+### Three rules inherited from the sibling data repositories
 
 Both learned the hard way in `realtime-data-repo` and `espc-model-repo`, and
 neither is optional here:
@@ -185,8 +185,23 @@ neither is optional here:
   reverse; the union across origins is held by the site's `check:docs`, the
   only side that can see every declaration at once.
 - **A product that leaves takes its files with it.** The stage is seeded from
-  what is already published, so a withdrawn product lingers unless it is
-  removed deliberately.
+  what is already published, so a withdrawn product can linger and be served
+  frozen. Measured 2026-08-31: undeclaring a whole product self-heals in two
+  runs, because the `published` branch is assembled from the declared products
+  and the Pages tree from the stage. **Renaming a file inside a product that
+  still exists does not heal at all** — its `writes` glob still matches, so
+  the bank keeps it. That is the case that has actually cost bytes.
+- **A step's scope must match its products', and it is one change, never
+  two.** Added 2026-08-31, learned by a failed production run. If a fetch
+  script publishes several families and this repository owns only some of
+  them, the `[steps.*]` `cmd` needs `--only=` naming exactly what its products
+  declare — the per-product `namespace`, `tiles` and `tile-key` commands
+  being scoped is not enough. Too WIDE and the step writes files no product
+  declares and the write fence refuses the whole run; too NARROW and files
+  somebody declared are never written and the previous copies carry forward
+  frozen, silently. A *product* is the unit of ownership; a *step* is the unit
+  of execution. The site's `check:docs` holds both directions across every
+  origin.
 
 ### Do not scrape the East Coast Node
 
