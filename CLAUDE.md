@@ -10,23 +10,27 @@ and nothing that runs. `PLAN.md` carries the feasibility work — the upstream,
 the measurements that decide the product's shape, and what is still open.
 Read its "What was measured" before trusting any number anywhere.
 
-<!-- DOC-DOCTRINE v1 begin — identical in all six repositories; `check:docs` holds them equal. Edit one, sync all. -->
+<!-- DOC-DOCTRINE v1 begin — identical in all eight repositories; `check:docs` holds them equal. Edit one, sync all. -->
 ## Where truth lives, and what "update docs" means
 
-Six repositories carry this project: `oceanlet.js` (the engine),
-`oceansensing.github.io` (the site, and every fetch script),
-`realtime-data-repo` (the orchestrator every data repository runs, and most
-products), `espc-model-repo` (the ESPC currents), `sentinel3-data-repo`
-(Sentinel-3 ocean color and HAB indicators) and `eccofs-model-repo` (the
-ECCOFS regional model) — the last two added 2026-08-30. Each document
-answers exactly one question.
+Eight repositories carry this project. The engine and the site:
+`oceanlet.js`, `oceansensing.github.io` (the site, and every fetch script).
+The orchestrator and the observations: `realtime-data-repo`. And the data
+repositories, which since 2026-08-30 split **currents from fields** per model:
+`espc-model-repo` (the ESPC currents — a legacy name, see below),
+`espc-model-fields-repo`, `eccofs-model-currents-repo`,
+`eccofs-model-fields-repo`, and `sentinel3-data-repo` (ocean color, which has
+no vector half to split). Each document answers exactly one question.
+
+**`espc-model-repo` is the ESPC CURRENTS repository** despite its name — the
+one exception to the convention, kept because its URL is a live origin and
+GitHub Pages does not reliably redirect a renamed project site. Read it and
+`eccofs-model-currents-repo` as the same kind of thing.
 
 **They are MEANT to carry the same four documents and three of them do not**
-— `oceanlet.js`, `sentinel3-data-repo` and `eccofs-model-repo` have a
-`DECISIONS.md`; the site, `realtime-data-repo` and `espc-model-repo` do not
-(measured 2026-08-30). That is a gap in three repositories, not a license to
-skip the file: a data repository closes one-way doors too, and it has
-nowhere to say so.
+— the site and `realtime-data-repo` still owe a `DECISIONS.md` (measured
+2026-08-30). That is a gap in two repositories, not a license to skip the
+file: a data repository closes one-way doors too.
 
 | file | answers | tense | it is stale when |
 | --- | --- | --- | --- |
@@ -43,7 +47,7 @@ whose rows are pinned by tests, a guide that introduces the model: each is
 the thing a reader is sent to when the short answer will not do, so each is
 the worst place for a claim that has quietly stopped being true.
 
-**"Update docs" means a sweep of all six repositories, not the one in hand.**
+**"Update docs" means a sweep of all eight repositories, not the one in hand.**
 Docs are part of the change, never a follow-up and never a separate ask. Six
 questions, asked of every repository the change touched:
 
@@ -60,13 +64,13 @@ questions, asked of every repository the change touched:
    this change?** → fix it there, in the same sitting.
 
 **Question 6 is the one that gets missed, and it is why this block is
-identical in six places.** Measured 2026-08-28: one tile-tier measurement
+identical in eight places.** Measured 2026-08-28: one tile-tier measurement
 falsified `espc-model-repo`'s README, its `products.toml` header and the
 site's README at once. Two were found; the third took a reminder from the
 owner, who then asked for this doctrine.
 
-**A SEVENTH repository consumes this system and is deliberately NOT in the
-six above**: `ocean-now`, the iOS port, which mirrors the site's published
+**One more repository consumes this system and is deliberately NOT in the
+list above**: `ocean-now`, the iOS port, which mirrors the site's published
 contract. It is not swept by these six questions and does not carry this
 block — it has a lighter mechanism instead, a pending list in its parity
 ledger, and the two repositories whose changes can reach it (the engine and
