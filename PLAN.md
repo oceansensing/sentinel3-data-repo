@@ -243,11 +243,15 @@ Recorded because it is the argument for the effort being small.
   every `roots` entry must be one the site's `test-schema.mjs --roots`
   publishes, or the orchestrator exits 2 and stops the publish; and a product
   that leaves takes its files with it.
-- **The doc doctrine applies.** This repository carries the same four
-  documents as the other four and the identical `DOC-DOCTRINE v1` block, held
-  equal by the site's `check:docs`. **It is not written yet** — this file is
-  the first, and `CLAUDE.md`, `README.md` and `DECISIONS.md` are owed before
-  anything runs.
+- **The doc doctrine applies, and this repository is inside it.** It carries
+  `README.md`, `CLAUDE.md`, `PLAN.md` and `DECISIONS.md`, with the identical
+  `DOC-DOCTRINE v1` block held byte-equal across all five by the site's
+  `check:docs` (written 2026-08-30). Adding it moved the doctrine's own count
+  from four to five, and the site's sibling list with it.
+- **It is the second repository of five to carry a `DECISIONS.md`.** Only
+  `oceanlet.js` had one; the site and both other data repositories do not,
+  measured 2026-08-30. The doctrine says all of them should, so that is a gap
+  in three repositories rather than a precedent to follow here.
 
 ---
 
