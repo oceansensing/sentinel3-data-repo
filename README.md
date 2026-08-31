@@ -12,7 +12,7 @@ rather than fact.
 `PLAN.md` is the founding plan and running record — the upstream, the
 measurements, and what is open. `DECISIONS.md` indexes the dated one-way
 decisions. **Which document gets what, and what "update docs" means across
-all five repositories, is the doctrine block at the top of `CLAUDE.md`** —
+all eight repositories, is the doctrine block at the top of `CLAUDE.md`** —
 the same text in all five, held equal by the site's `check:docs`.
 
 ## What it will publish
