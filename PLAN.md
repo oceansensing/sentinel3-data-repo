@@ -135,7 +135,13 @@ otherwise attractive.
 
 ## The decisions this supports
 
-### D-1 (proposed): the default layer is a 7-day merged composite
+**Four of these landed as `DECISIONS.md` D1–D4 on 2026-08-30** — its own
+repository, a composite rather than single overpasses, Sector FI whole, and
+merging 3A with 3B. What follows is the reasoning behind them plus the part
+that is still only a recommendation. **The numbering below is deliberately
+NOT D-anything**, so it cannot be mistaken for the decision index.
+
+### Recommendation 1: seven days for the composite window (NOT decided)
 
 **7 days is where the marginal return falls off**, and it is also what
 CoastWatch itself publishes for this region, which means a reader comparing
@@ -162,13 +168,13 @@ say so.
 undetected thin cloud or a sun-glint edge; a mean is dragged by exactly the
 outliers that most often are not water.
 
-### D-2 (proposed): the region is Sector FI, whole
+### Why Sector FI whole (landed as D3)
 
 Florida to Nova Scotia, in one upstream read, because that is how the dataset
 is cut and subsetting it would save nothing upstream. Whether the *published*
 product is clipped tighter is a storage question, below, not an upstream one.
 
-### D-3 (open, for the owner): what the HAB layer actually is
+### Recommendation 2: which HAB layer to build first (open, for the owner)
 
 Three candidates, in increasing order of how much this repository would have
 to invent:
