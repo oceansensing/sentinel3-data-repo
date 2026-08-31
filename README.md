@@ -4,10 +4,16 @@ Sentinel-3 OLCI ocean color for the US East Coast — chlorophyll-a, and the
 harmful algal bloom indicators built on it — published as the map data
 contract's grid files.
 
-**Nothing runs yet.** This repository holds its founding plan and its rules;
-there is no `pipeline/products.toml`, no cron, and nothing published. What
-follows describes the intended shape, and says plainly where it is intent
-rather than fact.
+**It publishes, since 2026-08-31.** `pipeline/products.toml` declares one
+product and the workflow builds it; the first green run put a 7-day merged
+composite at
+[`/map/chl-s3.json`](https://oceansensing.org/sentinel3-data-repo/map/chl-s3.json)
+with a native-resolution tile tier beside it, and the site draws it as
+*Chlorophyll-a (Sentinel-3)*.
+
+**The schedule is still off.** The workflow runs on `workflow_dispatch`
+only; its three daily crons are commented out, to be turned on in the same
+sitting that a second dispatched run confirms the first was not luck.
 
 `PLAN.md` is the founding plan and running record — the upstream, the
 measurements, and what is open. `DECISIONS.md` indexes the dated one-way
@@ -15,9 +21,9 @@ decisions. **Which document gets what, and what "update docs" means across
 all eight repositories, is the doctrine block at the top of `CLAUDE.md`** —
 the same text in all eight, held equal by the site's `check:docs`.
 
-## What it will publish
+## What it publishes
 
-Chlorophyll-a over the US East Coast, as a **multi-day merged composite**:
+Chlorophyll-a over the US East Coast, as a **7-day merged composite**:
 
 | | |
 | --- | --- |
@@ -27,13 +33,24 @@ Chlorophyll-a over the US East Coast, as a **multi-day merged composite**:
 | native resolution | 0.0025° ≈ **278 m** |
 | extent | lat 29.81–45.19, lon −80.04 to −59.96 — Florida to Nova Scotia |
 | upstream cadence | one frame per day per satellite, ~14:30–15:20Z |
-| upstream latency | **2–4 days**, measured 2026-08-30 |
+| upstream latency | **2–5 days** — S-3A 2, S-3B 5, measured 2026-08-31 |
 | upstream history | **90-day rolling window** — not an archive |
 
-**The composite length is not decided.** Seven days is recommended and
-measured (see below); the owner's call is open. The published extent and
-resolution are likewise open, pending a byte measurement against the 1 GB
-Pages cap.
+**Both open questions closed on 2026-08-31**, as `DECISIONS.md` D5 and D6.
+The window is **seven days**; the published product is **Sector FI whole at
+the instrument's own 0.0025°**, as a tile tier under a 0.05° overview, with
+values linear at two decimals.
+
+What that costs, measured the day it was decided:
+
+| | |
+| --- | --- |
+| overview | 402 × 308, **602 KB** |
+| per-cell age, same grid | **568 KB** |
+| tiles, native 0.0025° | **367 tiles, 233 MB** |
+| coverage of observable water | **76.8%** |
+| per-cell age of the freshest observation | median 2 d, p90 4 d, max 6 d |
+| upstream per build | ~1.7 GB, one native frame is 188 MB in 10.7 s |
 
 ## Why a composite, in one table
 
