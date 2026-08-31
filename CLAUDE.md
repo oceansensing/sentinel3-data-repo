@@ -220,6 +220,33 @@ fetchers and the data contract live in `oceansensing.github.io` and are
 checked out at run time, so a fetcher or `schema.ts` change lands here on the
 **next run**, not on any push here.
 
+### A coarser cadence is three changes, never one
+
+**Learned 2026-08-31 in `espc-model-fields-repo`**, whose heat-content layer
+went from the shared 3-hourly hour to 6-hourly to halve a tile tier's
+bandwidth. It is the closest thing this repository will do to a composite's
+cadence, so the shape is worth having before it is needed here.
+
+Publishing less often than your siblings touches three things, and only one of
+them is the cadence:
+
+1. **The cadence itself** — and express it against the CLOCK, not against a
+   run count. "Every other run" drifts, because GitHub delivers scheduled runs
+   45 min to 4 h 19 apart; "only when the hour is a multiple of N" cannot.
+2. **`max_age_hours`**, or the currency gate marks the product `behind` on
+   every run and fails the workflow after every deploy. A cadence and its
+   staleness budget are one decision.
+3. **Any cross-product rule in the site's contract that assumes everything
+   moves together.** ESPC's hour rule treats a same-run hour mismatch as a
+   **quarantine** — it withdraws the layer and ships the previous copy, with
+   every gate green. The fix was to teach the rule from a published header
+   field rather than exempt the product, so the guarantee got weaker in a
+   stated, checkable way instead of silently.
+
+**A composite has this problem by construction**: a 7-day window is a cadence
+of days against neighbours on hours, and whatever this repository publishes
+beside it will need the same three answers.
+
 ## The working agreement
 
 The same one the sibling repositories keep, in short: a measured constant
