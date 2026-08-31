@@ -13,7 +13,7 @@ rather than fact.
 measurements, and what is open. `DECISIONS.md` indexes the dated one-way
 decisions. **Which document gets what, and what "update docs" means across
 all eight repositories, is the doctrine block at the top of `CLAUDE.md`** —
-the same text in all five, held equal by the site's `check:docs`.
+the same text in all eight, held equal by the site's `check:docs`.
 
 ## What it will publish
 
