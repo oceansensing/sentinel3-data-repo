@@ -1,0 +1,18 @@
+{
+ "schema": 1,
+ "generated": "2026-08-31T21:38:16Z",
+ "mode": "full",
+ "fates": {
+  "chl-s3": "fresh"
+ },
+ "reasons": {},
+ "built": {
+  "chl-tiles": true
+ },
+ "withheld": {
+  "chl-s3": {}
+ },
+ "deploy": true,
+ "notes": [],
+ "behind": []
+}
