@@ -18,7 +18,7 @@
 #   --roots` publishes.** The orchestrator exits 2 on a root declared here
 #   that the contract does not know, and stops the publish. It does *not*
 #   fail on the reverse — a contract root this repository has no product for
-#   is the ordinary case, because three other origins own most of them.
+#   is the ordinary case, because five other origins own most of them.
 # - **A product that leaves takes its files with it.** The stage is seeded
 #   from the last publish, so a root a pipeline stops writing is carried
 #   forward for ever.
