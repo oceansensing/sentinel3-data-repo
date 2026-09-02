@@ -212,6 +212,26 @@ turns out to beat `chlor_a` inside the Bay, **that is an email to the node,
 not a scraper.** A hand-built scraper against a page that already 404s is a
 dependency on someone's directory layout.
 
+### The estuaries are empty upstream, not here
+
+Measured 2026-09-02, after the owner asked whether a quality flag was hiding
+the Chesapeake's tributaries: **the fetcher masks nothing but the 0–500 range,
+the published tiles and overview match a rebuild from the upstream 100% cell
+for cell, and the upstream serves one variable and no flags.** The James, York
+and Potomac carry 1–5% of their pixels on a day the Bay mouth carries 76%,
+because OC4Me's retrieval fails within about 5 km of every shore. Do not go
+looking for a flag in this pipeline, and do not "fix" it by widening the
+composite — a fortnight of nothing is still nothing. `PLAN.md` section 4 has
+the measurement and section 5 the alternatives; the one that measured better
+is Copernicus Marine's OLCI product, whose shore-loss zone is about one pixel.
+
+**If a Copernicus Marine fetcher is ever written for this repository, it
+inherits the Mercator fetcher's masking rule.** This repository is PUBLIC and
+the credentials are a username and password held as secrets; the toolbox is
+the only thing that reads them, and every line it prints goes through the
+mask that `fetch-mercator.py` gates with `mask_self_test`. A log line with a
+username in it is a leak on a public origin.
+
 ### The orchestrator is shared, so a change to it is a change to every repository
 
 `pipeline/orchestrate.py` lives in `realtime-data-repo` and every data

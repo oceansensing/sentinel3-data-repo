@@ -137,6 +137,8 @@ number in every file.
 
 Listed so nothing above is read as settling them: which HAB indicator to
 build first (chlorophyll anomaly recommended), and whether to accumulate an
-archive beyond the upstream's 90-day rolling window. Both are `PLAN.md`'s
-"Open" section. **D5 and D6 closed the first two of the four that stood
-here**, on 2026-08-31.
+archive beyond the upstream's 90-day rolling window — and, since 2026-09-02,
+whether the estuaries get a second origin (Copernicus Marine's OLCI product,
+measured in `PLAN.md` section 5). All three are `PLAN.md`'s "Open" section.
+**D5 and D6 closed the first two of the four that stood here**, on
+2026-08-31.

@@ -36,6 +36,12 @@ Chlorophyll-a over the US East Coast, as a **7-day merged composite**:
 | upstream latency | **2–5 days** — S-3A 2, S-3B 5, measured 2026-08-31 |
 | upstream history | **90-day rolling window** — not an archive |
 
+**The tributaries are mostly empty, and that is the upstream, measured
+2026-09-02.** On a clear day the Bay mouth carries a value in 76% of its
+pixels and the James River in 4.7%, because the OC4Me retrieval fails within
+about 5 km of every shore. Nothing here masks them; `PLAN.md` section 4 has
+the measurement and section 5 the alternatives.
+
 **Both open questions closed on 2026-08-31**, as `DECISIONS.md` D5 and D6.
 The window is **seven days**; the published product is **Sector FI whole at
 the instrument's own 0.0025°**, as a tile tier under a 0.05° overview, with
