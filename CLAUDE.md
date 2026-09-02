@@ -222,8 +222,10 @@ and Potomac carry 1–5% of their pixels on a day the Bay mouth carries 76%,
 because OC4Me's retrieval fails within about 5 km of every shore. Do not go
 looking for a flag in this pipeline, and do not "fix" it by widening the
 composite — a fortnight of nothing is still nothing. `PLAN.md` section 4 has
-the measurement and section 5 the alternatives; the one that measured better
-is Copernicus Marine's OLCI product, whose shore-loss zone is about one pixel.
+the measurement and section 5 the alternatives. Two measured better, on
+different axes: Copernicus Marine's OLCI product, whose shore-loss zone is
+about one 620 m pixel, and PACE's Level-2 chain, whose imagery painted the
+whole James at 1.2 km on a day OC4Me kept 4.7% of it.
 
 **If a Copernicus Marine fetcher is ever written for this repository, it
 inherits the Mercator fetcher's masking rule.** This repository is PUBLIC and

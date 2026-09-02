@@ -307,7 +307,29 @@ high as OC4Me's survivors; no in-situ check was made.
 - **Sentinel-2 MSI / Landsat OLI** at 10–30 m with Case-2 processors
   (ACOLITE, C2RCC) would resolve every creek, at a revisit of two to five
   days and a processing cost that is a project of its own.
-- **PACE OCI** — 1.2 km; coarser than the problem.
+- ~~**PACE OCI** — 1.2 km; coarser than the problem.~~ **Measured later the
+  same day, and the coarse pixel is not the whole story.** NASA's public GIBS
+  imagery of the OCI chlorophyll product (`OCI_PACE_Chlorophyll_a`, the 1 km
+  tile set, no login) painted, on 2026-08-23, **18.7% of the James box, 13.0%
+  of the York and 25.3% of the Potomac** — about the whole river at 1.2 km —
+  against 4.7%, 1.4% and 14.4% of pixels for OC4Me and 3.6%, 1.3% and 18.5%
+  for Copernicus Marine on the same day; 08-26 and 08-31 repeated it (James
+  18.5% and 16.0%), while 08-19, 08-20, 08-25 and 08-30 gave 0.1–3.8%, PACE's
+  13:00 local pass seeing different cloud from OLCI's 10:00. Imagery-based,
+  so an upper bound on flagged coverage and no statement about the values.
+  What it says is that NASA's Level-2 chain (SWIR-capable atmospheric
+  correction, NASA's flag set) keeps river pixels that EUMETSAT's baseline
+  chain drops. The rest of the ledger, from NASA's catalog on 2026-09-02:
+  granule footprint 1.2 km at nadir, 2-day global coverage; NRT Level-2
+  granules over the Bay indexed **2.3–5.3 h after the pass** (one at 20 h),
+  8–23 MB each, 1–3 per day; mapped products only at 4 km and 0.1°, so a
+  Bay layer means gridding Level-2 swaths ourselves; access is Earthdata
+  login, a new credential pair with the same masking rule; no PACE product on
+  CoastWatch's ERDDAP; no operational HAB or community-composition product
+  at OB.DAAC — MOANA is open-ocean picoplankton at 4 km, and the hyperspectral
+  HAB work is research. The no-credential path is the imagery itself as a
+  WMTS tile layer: a picture with a baked palette and no readout, in an
+  afternoon.
 
 **What this recommends**, for the owner rather than decided: the Copernicus
 Marine product as a **second chlorophyll origin** for the Bay — the
