@@ -5,8 +5,8 @@ bloom indicators built on it. A sibling data repository: it publishes to
 GitHub Pages on its own cron, holds no code of its own, and runs the shared
 orchestrator against its own `pipeline/products.toml`.
 
-**Nothing is built yet.** This repository currently holds its founding plan
-and nothing that runs. `PLAN.md` carries the feasibility work — the upstream,
+**It publishes, since 2026-08-31**, from dispatched runs while the crons stay
+commented out. `PLAN.md` carries the feasibility work — the upstream,
 the measurements that decide the product's shape, and what is still open.
 Read its "What was measured" before trusting any number anywhere.
 
@@ -121,11 +121,10 @@ fact from a guess that aged.
 - **`PLAN.md`** — the founding plan and the running record: the upstream and
   its contract traps, the coverage experiment behind the composite, and the
   open questions. It is where a measurement goes.
-- **`README.md`** — what this is and how to run it, once there is something
-  to run.
+- **`README.md`** — what this is and how to run it.
 - **`DECISIONS.md`** — the dated one-way decisions, D1 onward.
-- **`pipeline/products.toml`** — what this repository publishes. Not written
-  yet.
+- **`pipeline/products.toml`** — what this repository publishes: one
+  product, two roots, two tile tiers.
 
 ## What must not be got wrong here
 

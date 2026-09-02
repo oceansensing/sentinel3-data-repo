@@ -1,9 +1,9 @@
 # sentinel3-data-repo — the founding plan and running record
 
 Ocean color from Sentinel-3 OLCI, for the US East Coast, and the harmful
-algal bloom indicators that can be built on it. Nothing is built yet: this
-document is the feasibility work, its measurements, and the decisions they
-support. Started 2026-08-30.
+algal bloom indicators that can be built on it. Built and publishing since
+2026-08-31; this document is the feasibility work, its measurements, the
+decisions they support, and the running record. Started 2026-08-30.
 
 **Read "What was measured" before trusting any number elsewhere in here.**
 Every figure below was taken against the live upstream on 2026-08-30, and the
@@ -257,11 +257,9 @@ layer" that means three things.
 Named rather than implied, because a gap that looks like an omission gets
 filled twice.
 
-- **Storage.** The Chesapeake box alone is ~2.2 M cells per frame at native
-  resolution; Sector FI whole is far larger. Nothing here is measured yet,
-  and the 1 GB Pages cap is the constraint that shaped the ESPC split. **The
-  published tier's resolution and extent are a storage decision waiting on a
-  byte measurement**, exactly as the currents' were.
+- ~~**Storage.**~~ CLOSED 2026-08-31 as D6: measured at 367 tiles, 233 MB,
+  native 0.0025° over the whole sector — see "What the build costs" below.
+  The 1 GB Pages cap remains the constraint that shaped the ESPC split.
 - **The East Coast Node's own `chl_switch` product** — the one in the owner's
   screenshot (`sentinel-3.2026237.0825.1529C.b.L3.CB3...chl_switch`,
   which corresponds to the `2026-08-25T15:15:56Z` overpass). It is 300 m,
@@ -302,15 +300,15 @@ Recorded because it is the argument for the effort being small.
   that leaves takes its files with it.
 - **The doc doctrine applies, and this repository is inside it.** It carries
   `README.md`, `CLAUDE.md`, `PLAN.md` and `DECISIONS.md`, with the identical
-  `DOC-DOCTRINE v1` block held byte-equal across all **eight** by the site's
+  `DOC-DOCTRINE v1` block held byte-equal across all **ten** by the site's
   `check:docs` (written 2026-08-30). Adding it moved the doctrine's own count
   from four to five, and the site's sibling list with it; the currents/fields
   split later that day took it to eight.
 - **~~It is the second repository of five to carry a `DECISIONS.md`~~ —
-  CORRECTED 2026-08-31: all eight carry one.** When this was written only
+  CORRECTED 2026-08-31: all ten carry one.** When this was written only
   `oceanlet.js` and this repository had one, and it called that a gap in three
   others. The gap closed the next day, and `check:docs` gained a rule
-  requiring a `DECISIONS.md` **tracked in git** in every one of the eight — so
+  requiring a `DECISIONS.md` **tracked in git** in every one of the ten — so
   it is no longer a gap to note but a gate to keep green.
 
 ---

@@ -19,7 +19,7 @@ sitting that a second dispatched run confirms the first was not luck.
 measurements, and what is open. `DECISIONS.md` indexes the dated one-way
 decisions. **Which document gets what, and what "update docs" means across
 all ten repositories, is the doctrine block at the top of `CLAUDE.md`** —
-the same text in all eight, held equal by the site's `check:docs`.
+the same text in all ten, held equal by the site's `check:docs`.
 
 ## What it publishes
 
@@ -91,8 +91,12 @@ The same arrangement as `espc-model-repo`, and for the same reasons:
   Atlantic must not hold back the currents, and HYCOM's outages must not hold
   back this.
 
-Once there is a pipeline, this section gains the commands. There are none to
-give yet, and inventing them here is how a README starts lying.
+- **Dispatch a run**: Actions → the publish workflow → Run workflow. The
+  schedule's crons are still commented out, so every run is a dispatched one.
+- **Read the health**: `curl -s https://oceansensing.org/sentinel3-data-repo/status/status.json | python3 -m json.tool`
+- **What it publishes**: `chl-s3.json` and `chlage-s3.json`, the 7-day
+  composite and its per-cell age, with a native-resolution tile tier beside
+  each — see `pipeline/products.toml`.
 
 ## Structure
 
@@ -100,7 +104,7 @@ give yet, and inventing them here is how a README starts lying.
 PLAN.md         the founding plan and running record; measurements live here
 CLAUDE.md       what must not be got wrong here, and the shared doc doctrine
 DECISIONS.md    dated one-way decisions, D1 onward
-pipeline/       products.toml — not written yet
+pipeline/       products.toml — the one product and its two roots
 ```
 
 ## Licensing and attribution
