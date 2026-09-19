@@ -40,13 +40,17 @@ on:
   # --mode`, which has accepted only `full` since the light path was retired
   # on 2026-08-27 — so dispatching `light` would fail the run outright.
   workflow_dispatch:
-  # **Held OFF until a first dispatched run is green.** The siblings each
-  # learned this: a cron firing before `PIPELINES_SSH_KEY` can read the
-  # private site repository spins runners to fail at the same step, and a
-  # publish tree that has never been built once has nothing for the stage to
-  # be seeded from. The deploy key went on 2026-08-31; turn the schedule on
-  # after a dispatched run publishes a tree, not before.
-  # schedule:
+  # **ON since 2026-09-19.** It was held off until a first dispatched run was
+  # green — the siblings each learned that a cron firing before
+  # `PIPELINES_SSH_KEY` can read the private site repository spins runners to
+  # fail at the same step, and a publish tree that has never been built once
+  # has nothing for the stage to be seeded from. The deploy key went on
+  # 2026-08-31 and two dispatched runs published that evening, which was the
+  # condition — and then the line below was never uncommented. The map drew a
+  # 2026-08-29 overpass for nineteen days, until the owner asked whether the
+  # schedule was on. A third dispatched run proved the pipeline first (run
+  # 35463777731, 5 min 9 s, the overpass moved to 2026-09-17); PLAN has it.
+  schedule:
     # **One new overpass a day, so three attempts a day.** Everything above
     # this repository's siblings runs hourly because HYCOM publishes hourly;
     # CoastWatch publishes one Sentinel-3 frame per satellite per day and
@@ -62,9 +66,7 @@ on:
     # about 2 GB; `fetch-ocean-color.py` compares the newest overpass against
     # the published `refTime` in two small metadata requests and stops when
     # they match, so a run with nothing to do costs seconds.
-    # Commented until a dispatched run publishes a tree — see the header.
-    # Uncomment in the same sitting that confirms the first green run.
-    # - cron: '41 3,11,19 * * *'
+    - cron: '41 3,11,19 * * *'
 
 # Nothing at workflow level: each job says what it holds, and the job that
 # runs `pip install` and the fetchers holds nothing worth stealing.

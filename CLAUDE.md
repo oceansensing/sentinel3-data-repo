@@ -5,8 +5,17 @@ bloom indicators built on it. A sibling data repository: it publishes to
 GitHub Pages on its own cron, holds no code of its own, and runs the shared
 orchestrator against its own `pipeline/products.toml`.
 
-**It publishes, since 2026-08-31**, from dispatched runs while the crons stay
-commented out. `PLAN.md` carries the feasibility work — the upstream,
+**It publishes, since 2026-08-31, and on a schedule since 2026-09-19** —
+three attempts a day. **A schedule that is "to be turned on later" needs an
+owner and a date, or it is off**: the condition for turning this one on was
+met the evening the repository first published, nothing in any document or
+gate noticed that it then was not, and the map drew one overpass for
+nineteen days while every status line read `fresh` — because `status.json`
+is written by a run, and no run means no one to say the data has aged. The
+site's watchdog covers this origin but reads the `stale` flag the last run
+wrote, so it cannot see a pipeline that has stopped (read 2026-09-19); until
+it compares the status file's own time with now, a quiet line is not
+evidence that anything ran. `PLAN.md` carries the feasibility work — the upstream,
 the measurements that decide the product's shape, and what is still open.
 Read its "What was measured" before trusting any number anywhere.
 

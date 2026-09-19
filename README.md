@@ -11,9 +11,12 @@ composite at
 with a native-resolution tile tier beside it, and the site draws it as
 *Chlorophyll-a (Sentinel-3)*.
 
-**The schedule is still off.** The workflow runs on `workflow_dispatch`
-only; its three daily crons are commented out, to be turned on in the same
-sitting that a second dispatched run confirms the first was not luck.
+**The schedule is on, since 2026-09-19**: three attempts a day, at 03:41,
+11:41 and 19:41 UTC, the first to find a new overpass builds it and the
+others stop on the probe. (It had been left off for nineteen days after the
+two dispatched runs of 2026-08-31 met the condition for turning it on, and
+the map drew a 2026-08-29 overpass the whole time; `PLAN.md` has the
+record.)
 
 `PLAN.md` is the founding plan and running record — the upstream, the
 measurements, and what is open. `DECISIONS.md` indexes the dated one-way
@@ -97,8 +100,10 @@ The same arrangement as `espc-model-repo`, and for the same reasons:
   Atlantic must not hold back the currents, and HYCOM's outages must not hold
   back this.
 
-- **Dispatch a run**: Actions → the publish workflow → Run workflow. The
-  schedule's crons are still commented out, so every run is a dispatched one.
+- **Dispatch a run**: Actions → the publish workflow → Run workflow, or
+  `gh workflow run publish.yml --repo oceansensing/sentinel3-data-repo`. The
+  schedule runs it three times a day since 2026-09-19; a dispatch is for not
+  waiting.
 - **Read the health**: `curl -s https://oceansensing.org/sentinel3-data-repo/status/status.json | python3 -m json.tool`
 - **What it publishes**: `chl-s3.json` and `chlage-s3.json`, the 7-day
   composite and its per-cell age, with a native-resolution tile tier beside

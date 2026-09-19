@@ -516,3 +516,41 @@ season will give different numbers — **late August is not the cloudiest time
 of year on this coast, and it is not the clearest either.** A winter re-run
 is the honest check on the 7-day recommendation, and nothing here has done
 it.
+
+## 2026-09-19: the schedule was never turned on, and nothing said so
+
+The owner asked whether this repository's schedule was on. It was not. The
+workflow's only trigger was `workflow_dispatch`; the three daily crons were
+commented out "until a dispatched run publishes a tree", and the README said
+they would be turned on "in the same sitting that a second dispatched run
+confirms the first was not luck". That sitting was 2026-08-31: a failure at
+20:38Z, then green runs at 20:54Z and 21:33Z. The line was not uncommented,
+and there were no runs at all from then until today — nineteen days in which
+the published composite stayed at the overpass of 2026-08-29T15:13Z and the
+site drew it as *Chlorophyll-a (Sentinel-3)*.
+
+**Why nothing noticed.** `status/status.json` is written by a run. With no
+runs it kept saying what the last one had said — `chl-s3: fresh, 54 h` — for
+as long as anyone cared to read it; age is only recomputed by the thing that
+was not running. Nothing in `check:docs` reads a workflow's triggers, and
+the README's "still off" was true every day it was read.
+
+**Turned on today, after proving the pipeline first.** A dispatched run on
+the unchanged main (35463777731, 19:15Z, 5 min 9 s; `Fetch, validate,
+assemble` 241 s) published a new composite: `refTime` 2026-09-17T15:19:42Z,
+`fresh` at 52 h against the 96 h allowance. Then `schedule:` and
+`cron: '41 3,11,19 * * *'` were uncommented, and the README, this file and
+CLAUDE moved in the same commit. The repository is public, so the runs cost
+nothing; a run that finds no new overpass stops on the probe.
+
+**The gap this exposed, read the same day, not closed here.** The site's
+watchdog (`.github/watchdog.py` in `oceansensing.github.io`, twice a day)
+does cover this origin — it derives its list from `MAP_ORIGINS`, and this
+one is in it — but `currency_problems` reads each product's `stale` flag as
+the last run wrote it and never compares the status document's own time
+with now. So an origin that has stopped running is, to the watchdog,
+permanently as fresh as it was on its last good day: it was quiet for
+nineteen days because it was told `stale: false` nineteen days ago. The same
+is true of every origin. The fix belongs in the site repository — a status
+document older than its cadence allows is itself the alarm — and is the
+owner's call to schedule.
