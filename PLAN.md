@@ -554,3 +554,26 @@ nineteen days because it was told `stale: false` nineteen days ago. The same
 is true of every origin. The fix belongs in the site repository — a status
 document older than its cadence allows is itself the alarm — and is the
 owner's call to schedule.
+
+**The first scheduled run, and what it showed (19:45Z the same evening, run
+35465311792, green, 5 min 20 s).** The cron fired four minutes after its
+slot. The probe did its job in seconds — `nothing new: newest overpass
+2026-09-17T15:19:42Z is already published` — and then the run rebuilt the
+whole composite anyway: `tiles chl-s3: building (0 adrift, 1 missing)`, 232 s
+and the full seven-day read from CoastWatch, because the tile cache for that
+overpass did not exist. It did not exist because the run that FOUND the
+overpass, half an hour earlier, never saved it: there the `color` step builds
+the grids and the tiles in one pass, the orchestrator does not report the
+tier as built (`built-chl-tiles` is never set on that path), and `Save
+chlorophyll tiles` is conditional on exactly that. The second run reports it,
+saves 23 MB, and from then on a run restores the cache and stops in seconds.
+**So every new overpass is fetched twice** — once by the run that finds it
+and once by the next — and the workflow header's "a run with nothing to do
+costs seconds" is true only from the third run of each overpass on. The
+minutes are free; the second 2 GB read from CoastWatch's ERDDAP is the cost,
+once a day. Predicted and checkable: the 03:41Z run of 2026-09-20 restores
+`chl-tiles-v2-chl-s3:7d:2026-09-17T15:19:42Z_…` and ends in well under a
+minute of fetch. Not fixed here — the fix is in the shared orchestrator
+(`realtime-data-repo`, `pipeline/orchestrate.py`: a tier built inside a
+fresh step is a tier built) or in how this repository's `products.toml`
+declares the tier — and is the owner's call to schedule.
