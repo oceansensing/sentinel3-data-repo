@@ -592,3 +592,18 @@ minute of fetch. Not fixed here — the fix is in the shared orchestrator
 (`realtime-data-repo`, `pipeline/orchestrate.py`: a tier built inside a
 fresh step is a tier built) or in how this repository's `products.toml`
 declares the tier — and is the owner's call to schedule.
+
+**Read, 2026-09-20T03:48Z (run 35487542012, scheduled, green, 62 s end to
+end).** The prediction above held: `Cache restored from key:
+chl-tiles-v2-chl-s3:7d:2026-09-17T15:19:42Z_…`, `nothing new: newest
+overpass 2026-09-17T15:19:42Z is already published`, `Fetch, validate,
+assemble` 1 s, `Save chlorophyll tiles` skipped — nothing had changed, so
+nothing was saved again, which is the second of the orchestrator fix's
+three boundaries seen live. It was also the first run here on the
+orchestrator that publishes a schedule: `status/status.json` now carries
+`schedule: {crons: ['41 3,11,19 * * *'], longestGapHours: 8.0}`. **Still to
+read:** the first run that finds a NEW overpass, which should log `tiles
+chl-s3: built by its own step — the cache will be saved` and `Cache saved`,
+and the run after it, which should then be this short. (A log search for
+"built by its own step" will also match `tiles alpha` — that is the
+orchestrator's unit suite printing into the same log, not this product.)
