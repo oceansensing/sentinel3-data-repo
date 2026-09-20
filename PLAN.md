@@ -543,7 +543,22 @@ assemble` 241 s) published a new composite: `refTime` 2026-09-17T15:19:42Z,
 CLAUDE moved in the same commit. The repository is public, so the runs cost
 nothing; a run that finds no new overpass stops on the probe.
 
-**The gap this exposed, read the same day, not closed here.** The site's
+**CORRECTION, 2026-09-20: the paragraph below is wrong, and is kept so the
+correction has something to point at.** The watchdog was not blind. It
+compares every origin's `generated` with now, and it had reported this
+repository's silence in all 39 comments of its issue since 2026-08-31 —
+28 h, then 220, then 450. It went unread because 36 of those comments also
+carried a FALSE alarm: one three-hour budget was applied to every origin,
+and the six-hourly Mercator fields tripped it at nearly every check, so the
+issue never closed. Fixed the same day in two places — the orchestrator
+publishes each origin's own `schedule.longestGapHours` (8.0 here, and
+`null` for a workflow with no cron, which is what this repository would
+have said for nineteen days), and the watchdog holds each origin to it and
+reports a missing schedule on sight. `realtime-data-repo`'s and the site's
+PLANs have the record.
+
+**The gap this exposed, read the same day, not closed here.** *(Wrong —
+see above.)* The site's
 watchdog (`.github/watchdog.py` in `oceansensing.github.io`, twice a day)
 does cover this origin — it derives its list from `MAP_ORIGINS`, and this
 one is in it — but `currency_problems` reads each product's `stale` flag as

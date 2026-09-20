@@ -12,10 +12,14 @@ met the evening the repository first published, nothing in any document or
 gate noticed that it then was not, and the map drew one overpass for
 nineteen days while every status line read `fresh` — because `status.json`
 is written by a run, and no run means no one to say the data has aged. The
-site's watchdog covers this origin but reads the `stale` flag the last run
-wrote, so it cannot see a pipeline that has stopped (read 2026-09-19); until
-it compares the status file's own time with now, a quiet line is not
-evidence that anything ran. `PLAN.md` carries the feasibility work — the upstream,
+site's watchdog DID see it — it compares `generated` with now and said so
+twice a day in an issue that had been open since 2026-08-31 — and nobody
+read it, because the same issue carried a false alarm about another origin
+at nearly every check. Since 2026-09-20 `status.json` here publishes
+`schedule.longestGapHours` (8.0), the watchdog holds this origin to
+thirteen hours rather than three, and a workflow with no cron is reported
+on sight. **If the crons are ever commented out again, the status says
+`null` and the watchdog's issue says why.** `PLAN.md` carries the feasibility work — the upstream,
 the measurements that decide the product's shape, and what is still open.
 Read its "What was measured" before trusting any number anywhere.
 
