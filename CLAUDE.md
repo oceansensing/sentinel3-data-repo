@@ -333,3 +333,15 @@ moves with its reason in the same commit; new checks are mutation-tested
 before they are believed; exit codes are captured before output is read; docs
 are part of the change, never a follow-up. **A number in prose without an
 anchor says where it was measured and when, or it is a guess that will age.**
+
+## The R2 publish (2026-09-24)
+
+This workflow publishes twice from one build: to GitHub Pages, and to
+Cloudflare R2 under `oceannow-data/<this repository>/` through the
+`publish-r2` job (ocean-now's D24). **R2 stands on its own** — the owner,
+2026-09-24: *"When operational R2 server should be able to function on its
+own without GitHub. Cross check with GitHub is a feature but not
+requirement"* — so the job needs only `build` and its publish decision, and
+neither side's failure stops the other. The script, its rules and its tests
+are `realtime-data-repo`'s `pipeline/publish_r2.py`; the credentials are the
+`oceansensing` organization's `R2_*` secrets.
