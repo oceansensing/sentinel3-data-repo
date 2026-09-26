@@ -1,16 +1,17 @@
 # The Sentinel-3 ocean color publish, and this repository holds none of the
 # code that does it.
 #
-# The **fetcher** lives in `oceansensing.github.io` (`scripts/`) and the
-# **orchestrator** lives in `realtime-data-repo` (`pipeline/`). Both are
-# checked out here at run time, and `PIPELINE_ROOT` points the orchestrator at
-# *this* workspace so it assembles and publishes this repository's tree from
+# The **fetcher** (`scripts/`) and, since 2026-09-26, the **orchestrator**
+# (`pipeline/`) both live in the private `oceansensing.github.io`, checked out
+# once here at run time as `site/`, and `PIPELINE_ROOT` points the orchestrator
+# at *this* workspace so it assembles and publishes this repository's tree from
 # this repository's `pipeline/products.toml`.
 #
 # The alternative was copying the orchestrator into every new data repository.
 # Three faults were found in that file in a single day, and each would have
-# had to be found twice and fixed twice. This is the fourth repository to run
-# it and the third to run it on a tree it does not live in.
+# had to be found twice and fixed twice. This was the fourth repository to run
+# it and the third to run it on a tree it did not live in; since 2026-09-26
+# every origin does.
 #
 # **This file is `espc-model-fields-repo`'s with three changes**, kept
 # deliberately close so the two can be diffed: a daily cadence instead of an

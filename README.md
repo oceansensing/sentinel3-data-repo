@@ -85,15 +85,14 @@ single-satellite window.
 The full method, and the caveat that late August is neither the cloudiest nor
 the clearest season on this coast, are in `PLAN.md`.
 
-## How it will run
+## How it runs
 
 The same arrangement as `espc-model-repo`, and for the same reasons:
 
-- **No code here.** The orchestrator (`pipeline/orchestrate.py`) comes from
-  `realtime-data-repo`; the fetchers and the published-file contract
-  (`schema.ts`) come from `oceansensing.github.io`. Both are checked out at
-  run time, so a change to either lands here on the next run rather than on
-  any push here.
+- **No code here.** The orchestrator (the site's private `pipeline/`, since
+  2026-09-26), the fetchers and the published-file contract (`schema.ts`) all
+  come from `oceansensing.github.io`, checked out at run time, so a change to
+  any of them lands here on the next run rather than on any push here.
 - **This repository carries `pipeline/products.toml`** — what it publishes,
   and nothing else executable.
 - **Its own cron and its own fault domain.** A cloudy fortnight over the
@@ -108,6 +107,10 @@ The same arrangement as `espc-model-repo`, and for the same reasons:
 - **What it publishes**: `chl-s3.json` and `chlage-s3.json`, the 7-day
   composite and its per-cell age, with a native-resolution tile tier beside
   each — see `pipeline/products.toml`.
+
+The same tree also goes to Cloudflare R2 (`oceannow-data/sentinel3-data-repo/`),
+which the Ocean Now app reads; the site's `pipeline/publish_r2.py` has the
+rules.
 
 ## Structure
 

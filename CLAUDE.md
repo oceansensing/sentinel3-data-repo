@@ -253,9 +253,10 @@ username in it is a leak on a public origin.
 `pipeline/orchestrate.py` lives in the site's private `pipeline/` folder
 (since 2026-09-26; in `realtime-data-repo` before) and every data
 repository runs it, pointed at its own workspace through `PIPELINE_ROOT`. The
-fetchers and the data contract live in `oceansensing.github.io` and are
-checked out at run time, so a fetcher or `schema.ts` change lands here on the
-**next run**, not on any push here.
+fetchers and the data contract live beside it in `oceansensing.github.io`, the
+one checkout a run makes, so a change to the orchestrator, a fetcher or
+`schema.ts` — all the site's — lands here on the **next run**, not on any push
+here.
 
 ### A coarser cadence is three changes, never one
 

@@ -470,8 +470,9 @@ Recorded because it is the argument for the effort being small.
   through the same `DataTileLattice` tier ladder and the same `schema.ts`
   grid contract. No engine work is anticipated.
 - **The orchestrator is shared.** `pipeline/orchestrate.py` lives in
-  `realtime-data-repo` and both data repositories run it, pointed at their
-  own workspace through `PIPELINE_ROOT`. This repository would carry a
+  `realtime-data-repo` (the site's private `pipeline/` since 2026-09-26; every
+  origin runs it) and both data repositories run it, pointed at their own
+  workspace through `PIPELINE_ROOT`. This repository would carry a
   `pipeline/products.toml` and nothing else executable.
 - **Two rules inherited from the sibling**, both learned the hard way there:
   every `roots` entry must be one the site's `test-schema.mjs --roots`
