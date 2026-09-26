@@ -250,7 +250,8 @@ username in it is a leak on a public origin.
 
 ### The orchestrator is shared, so a change to it is a change to every repository
 
-`pipeline/orchestrate.py` lives in `realtime-data-repo` and every data
+`pipeline/orchestrate.py` lives in the site's private `pipeline/` folder
+(since 2026-09-26; in `realtime-data-repo` before) and every data
 repository runs it, pointed at its own workspace through `PIPELINE_ROOT`. The
 fetchers and the data contract live in `oceansensing.github.io` and are
 checked out at run time, so a fetcher or `schema.ts` change lands here on the
@@ -344,5 +345,6 @@ Cloudflare R2 under `oceannow-data/<this repository>/` through the
 own without GitHub. Cross check with GitHub is a feature but not
 requirement"* — so the job needs only `build` and its publish decision, and
 neither side's failure stops the other. The script, its rules and its tests
-are `realtime-data-repo`'s `pipeline/publish_r2.py`; the credentials are the
+are the site's `pipeline/publish_r2.py` (private; in
+`realtime-data-repo` until 2026-09-26); the credentials are the
 `oceansensing` organization's `R2_*` secrets.
