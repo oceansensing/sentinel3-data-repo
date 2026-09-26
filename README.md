@@ -108,8 +108,8 @@ The same arrangement as `espc-model-repo`, and for the same reasons:
   composite and its per-cell age, with a native-resolution tile tier beside
   each — see `pipeline/products.toml`.
 
-The same tree also goes to Cloudflare R2 (`oceannow-data/sentinel3-data-repo/`),
-which the Ocean Now app reads; the site's `pipeline/publish_r2.py` has the
+The same tree also goes to a second host, Cloudflare R2, under this
+repository's name; the site's `pipeline/publish_r2.py` has the
 rules.
 
 ## Structure
