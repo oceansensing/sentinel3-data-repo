@@ -635,3 +635,12 @@ the server's words in its `reason`; the watchdog says the upstream failed. A
 404 stays ours — a request of ours can name what does not exist. **A green run
 here is not a healthy one**: no workflow fails on `behind` since 2026-08-27;
 read `status/status.json` or the watchdog's issue.
+
+## The workflow's packages come from the site — 2026-09-27
+
+The publish workflow installs `site/scripts/requirements-color.txt`, one file
+per fetcher family, instead of naming packages in its own `pip install`
+line. Dependabot reads requirements files and never a workflow line: an
+inline pin elsewhere had carried `requests` 2.32.3, a version with two
+advisories, unflagged. The site's `check:docs` now refuses an inline package
+here. Confirmed by a dispatched run, green on build, Pages and R2.
