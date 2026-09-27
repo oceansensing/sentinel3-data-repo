@@ -184,9 +184,11 @@ jobs:
       # ERDDAP's netCDF is binary — `scipy.io.netcdf_file` reads netCDF-3
       # without pulling the whole netCDF4/HDF5 stack in. Pinned rather than
       # floating: a fetcher whose numeric library changed under it publishes
-      # numbers, not an error.
+      # numbers, not an error. The pins live in the site's
+      # scripts/requirements-color.txt since 2026-09-27, where Dependabot reads
+      # them: inline here, requests 2.32.3 carried two advisories unflagged.
       - name: Install what the fetcher needs
-        run: pip install --no-cache-dir 'requests==2.32.3' 'numpy==2.1.3' 'scipy==1.14.1'
+        run: pip install --no-cache-dir -r site/scripts/requirements-color.txt
 
       - name: Unit-test the orchestrator
         working-directory: site
