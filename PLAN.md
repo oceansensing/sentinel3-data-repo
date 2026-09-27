@@ -608,3 +608,30 @@ chl-s3: built by its own step — the cache will be saved` and `Cache saved`,
 and the run after it, which should then be this short. (A log search for
 "built by its own step" will also match `tiles alpha` — that is the
 orchestrator's unit suite printing into the same log, not this product.)
+
+**Read, 2026-09-25T11:45Z (scheduled, green): the first run across a NEW
+overpass**, window ending 2026-09-23T15:17Z — `tiles chl-s3: built by its own
+step — the cache will be saved`, then `Cache saved with key:
+chl-tiles-v2-chl-s3:7d:2026-09-23T15:17:06Z_…`. And 2026-09-26T20:08Z:
+`Cache hit`, `nothing new: newest overpass 2026-09-25T15:13:44Z is already
+published`. All three boundaries of the 09-19 fix have now been seen live.
+
+## 2026-09-22 to 09-25: held three days on CoastWatch's errors, reported as ours
+
+*Written 2026-09-27, from the run logs; nothing recorded it at the time.*
+Eleven runs in a row, 2026-09-22 11:45Z to 09-25 03:49Z, held `chl-s3`: each
+read the new window's bands for about eight minutes and died on an ERDDAP
+answer of HTTP 502 (eight runs), 503 (two) or 404 (one), after four tries.
+The composite stayed at the overpass of 2026-09-17 until the 09-25 11:45Z run
+got through. Every run was green, and the site's watchdog reported the lag
+six times as *"published behind … this one is ours"*, because the probe could
+see the newer overpasses and a held product could only be ours.
+
+**Fixed 2026-09-27 in the site's `pipeline/` and fetcher** (its pipeline PLAN
+has the record): `fetch-ocean-color.py` exits 75 when CoastWatch's last
+answer was 429, 500, 502, 503 or 504, or no answer at all, and the
+orchestrator then publishes the held product as `staleCause: upstream` with
+the server's words in its `reason`; the watchdog says the upstream failed. A
+404 stays ours — a request of ours can name what does not exist. **A green run
+here is not a healthy one**: no workflow fails on `behind` since 2026-08-27;
+read `status/status.json` or the watchdog's issue.
