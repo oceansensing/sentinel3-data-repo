@@ -1,0 +1,31 @@
+{
+ "schema": 1,
+ "product": "chl-s3",
+ "title": "Sentinel-3 OLCI chlorophyll-a, 7-day composite",
+ "fate": "fresh",
+ "reason": null,
+ "checked": "2026-10-03T13:19:16Z",
+ "updated": "2026-10-02T19:56:38Z",
+ "hour": "2026-10-01T15:09:38Z",
+ "modelRun": null,
+ "source": "NOAA CoastWatch, Copernicus Sentinel-3 OLCI",
+ "hours": [
+  "2026-10-01T15:09:38Z"
+ ],
+ "files": {
+  "chl-s3.json": {
+   "bytes": 615186,
+   "sha256": "048445da15f2fc65cda9ea6ea087f4ea7abc3a05cf24750dd0acb0a36320274b"
+  },
+  "chlage-s3.json": {
+   "bytes": 579815,
+   "sha256": "039bb853743289b443aca21a2c3c28ed6382ef190c13e8b05f96cc39aaec0aae"
+  }
+ },
+ "tiles": {
+  "tiles-chl-s3": {
+   "state": "kept",
+   "reason": null
+  }
+ }
+}
