@@ -220,11 +220,15 @@ jobs:
       # invisible otherwise: a cache nothing restores is not an error, it is
       # tiles rebuilt from scratch every run, with correct output.
       #
-      # **No `restore-keys` on these, and the sibling has none either.** They
-      # were prefix restores for light runs and were kept here, inert, only so
-      # the two workflows would not drift. The light mode went on 2026-08-27
-      # and the prefixes went with it on 2026-08-28; an exact key or a cold
-      # rebuild is the whole of it now.
+      # **`restore-keys` is the published hour's key, and nothing wider**
+      # (2026-10-14). The prefix restores of the light runs went with them on
+      # 2026-08-28; this is one complete key, the one the last publish's tiles
+      # are under, which `plan` names as `cache-held-<name>` whenever the
+      # probe names another hour, and leaves empty, and inert, when it does
+      # not. A miss on the probe's key restores what is published; the
+      # orchestrator keeps it aside while the steps run and puts it back if
+      # the product is held, so a hold after a probe that answered keeps its
+      # tiles.
       # **One tier, and a cache hit here is worth more than in any sibling.**
       # The chlorophyll tiles are the product rather than an optimization of
       # it (D6): ~200 MB at the instrument's own 278 m. A cold build reads
@@ -236,6 +240,7 @@ jobs:
         with:
           path: ${{ steps.plan.outputs.cache-paths-chl-tiles }}
           key: ${{ steps.plan.outputs.cache-key-chl-tiles }}
+          restore-keys: ${{ steps.plan.outputs.cache-held-chl-tiles }}
 
       - name: Fetch, validate, assemble
         id: run
