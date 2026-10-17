@@ -1,0 +1,39 @@
+{
+ "schema": 2,
+ "contract": 1,
+ "generated": "2026-10-17T19:45:40Z",
+ "mode": "full",
+ "run": {
+  "id": "39063792441",
+  "url": "https://github.com/oceansensing/sentinel3-data-repo/actions/runs/39063792441"
+ },
+ "schedule": {
+  "crons": [
+   "41 3,11,19 * * *"
+  ],
+  "longestGapHours": 8.0
+ },
+ "products": {
+  "chl-s3": {
+   "title": "Sentinel-3 OLCI chlorophyll-a, 7-day composite",
+   "roots": [
+    "chl-s3.json",
+    "chlage-s3.json"
+   ],
+   "fate": "fresh",
+   "reason": null,
+   "checked": "2026-10-17T19:45:40Z",
+   "updated": "2026-10-17T03:51:19Z",
+   "hour": "2026-10-15T14:55:00Z",
+   "modelRun": null,
+   "source": "NOAA CoastWatch, Copernicus Sentinel-3 OLCI",
+   "hours": [
+    "2026-10-15T14:55:00Z"
+   ],
+   "stale": false,
+   "staleCause": null,
+   "ageHours": 52.84,
+   "nearestOffsetHours": 52.84
+  }
+ }
+}
