@@ -26,7 +26,7 @@ Read its "What was measured" before trusting any number anywhere.
 <!-- DOC-DOCTRINE v1 begin — identical in all thirty-nine repositories; `check:docs` holds them equal. Edit one, sync all. -->
 ## Where truth lives, and what "update docs" means
 
-Thirty-four repositories carry this project. The engine and the site:
+Thirty-nine repositories carry this project. The engine and the site:
 `oceanlet.js`, `oceansensing.github.io` (the site, every fetch script, and
 since 2026-09-26 the pipeline's code, `pipeline/`). The observations:
 `realtime-data-repo`. And the data
