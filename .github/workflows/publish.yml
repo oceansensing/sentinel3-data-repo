@@ -1,81 +1,14 @@
-# The Sentinel-3 ocean color publish, and this repository holds none of the
-# code that does it.
-#
-# The **fetcher** (`scripts/`) and, since 2026-09-26, the **orchestrator**
-# (`pipeline/`) both live in the private `oceansensing.github.io`, checked out
-# once here at run time as `site/`, and `PIPELINE_ROOT` points the orchestrator
-# at *this* workspace so it assembles and publishes this repository's tree from
-# this repository's `pipeline/products.toml`.
-#
-# The alternative was copying the orchestrator into every new data repository.
-# Three faults were found in that file in a single day, and each would have
-# had to be found twice and fixed twice. This was the fourth repository to run
-# it and the third to run it on a tree it did not live in; since 2026-09-26
-# every origin does.
-#
-# **This file is `espc-model-fields-repo`'s with three changes**, kept
-# deliberately close so the two can be diffed: a daily cadence instead of an
-# hourly one, one cache pair instead of four, and this header. Everything
-# else — the checkout order, the deploy-key reasoning, the failure-message
-# step, the two-job privilege split — is that file's and should be changed in
-# both or neither.
-#
-# **What is genuinely different here, and it is the upstream rather than the
-# machinery.** Every sibling publishes a MODEL: HYCOM on a forecast clock,
-# with a run anchor and leads and an hour that ten roots must agree on. This
-# publishes a SATELLITE COMPOSITE. There is no run, no lead, and no hour rule
-# to satisfy — its `refTime` is the newest overpass, which arrives two to five
-# days after the fact and cannot be hurried. Three consequences show up below:
-# a daily schedule, a 96-hour staleness allowance in `products.toml`, and a
-# probe that compares overpass timestamps rather than model hours.
-#
-# **No `pip install` step, and that IS a difference from the siblings.**
-# `fetch-ocean-color.py` needs `requests`, `numpy` and `scipy` — netCDF from
-# ERDDAP is binary, and the composite is a median over nine frames — where
-# `fetch-ocean-fields.py` is standard-library Python. The install step is
-# below, pinned, and is the one place this file adds work rather than removing
-# it.
+# Publish this repository's data: built by the pipeline in
+# oceansensing/oceansensing.github.io, which keeps its documentation.
+# Secrets: PIPELINES_SSH_KEY, R2_ACCESS_KEY_ID, R2_ENDPOINT, R2_SECRET_ACCESS_KEY.
+
 on:
-  # **No `mode` input, because there is no longer a mode.** It offered
-  # `full | light` and passed the choice straight to `orchestrate.py plan
-  # --mode`, which has accepted only `full` since the light path was retired
-  # on 2026-08-27 — so dispatching `light` would fail the run outright.
   workflow_dispatch:
-  # **ON since 2026-09-19.** It was held off until a first dispatched run was
-  # green — the siblings each learned that a cron firing before
-  # `PIPELINES_SSH_KEY` can read the private site repository spins runners to
-  # fail at the same step, and a publish tree that has never been built once
-  # has nothing for the stage to be seeded from. The deploy key went on
-  # 2026-08-31 and two dispatched runs published that evening, which was the
-  # condition — and then the line below was never uncommented. The map drew a
-  # 2026-08-29 overpass for nineteen days, until the owner asked whether the
-  # schedule was on. A third dispatched run proved the pipeline first (run
-  # 35463777731, 5 min 9 s, the overpass moved to 2026-09-17); PLAN has it.
   schedule:
-    # **One new overpass a day, so three attempts a day.** Everything above
-    # this repository's siblings runs hourly because HYCOM publishes hourly;
-    # CoastWatch publishes one Sentinel-3 frame per satellite per day and
-    # delivers it two to five days late, so an hourly cadence would spend
-    # twenty-three runs discovering nothing had changed.
-    #
-    # Three, not one, because the arrival time is not predictable: the
-    # overpass is ~14:30-15:20Z but its appearance on ERDDAP is whenever the
-    # processing chain finishes. Spread across the day, the first to find a
-    # new frame builds it and the other two exit on the probe.
-    #
-    # **The probe is what makes even three affordable.** A full build moves
-    # about 2 GB; `fetch-ocean-color.py` compares the newest overpass against
-    # the published `refTime` in two small metadata requests and stops when
-    # they match, so a run with nothing to do costs seconds.
     - cron: '41 3,11,19 * * *'
 
-# Nothing at workflow level: each job says what it holds, and the job that
-# runs `pip install` and the fetchers holds nothing worth stealing.
 permissions: {}
 
-# One publish at a time. `cancel-in-progress: false` on purpose — a run that
-# is already fetching should finish rather than be discarded, and a newer one
-# queues behind it.
 concurrency:
   group: publish
   cancel-in-progress: false
@@ -90,43 +23,9 @@ jobs:
       deploy: ${{ steps.run.outputs.deploy }}
       behind: ${{ steps.run.outputs.behind }}
     steps:
-      # This repository first: actions/checkout cleans its destination, so
-      # taking the root after the others would wipe them.
       - name: Check out this repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      # The fetchers and the published contract, one copy, in the repository
-      # the map lives in.
-      #
-      # **That repository is private, and the deploy key below is the only
-      # reason this can read it.** With no credential `actions/checkout` falls
-      # back to this workflow's own GITHUB_TOKEN, which is scoped to this
-      # repository and holds no grant on the site — a 404 that would take down
-      # every product at once rather than one.
-      #
-      # A deploy key over a PAT or an App, on what this step actually needs:
-      # it reads exactly one repository and writes nothing. The *scope* is by
-      # construction — a deploy key reaches one repository and no other — and
-      # the **read-only part is a checkbox**, "Allow write access", which must
-      # be left unchecked. Nothing here pushes to the site repository, and
-      # this job runs `pip install`, `npm ci` and four fetch scripts against
-      # public servers, so write access here would put the repository that
-      # deploys the public site inside that blast radius.
-      #
-      # It also does not expire, where a fine-grained PAT stops the whole
-      # pipeline dead on its expiry date, and it belongs to no person, so it
-      # survives somebody leaving the org.
-      #
-      # **Its own key, not the one `realtime-data-repo` uses.** A repository
-      # may hold many deploy keys, and one per consumer means revoking or
-      # rotating one does not take the other down. The public half goes on the
-      # site repository's Deploy keys page with write access unchecked; the
-      # private half is the secret named here.
-      #
-      # The hazard in the ordering, measured once already: the secret **arms**
-      # this path the moment it exists, because a non-empty `ssh-key` sends
-      # `actions/checkout` down SSH and the HTTPS fallback is not consulted.
-      # Put the key on the site repository first, then set the secret here.
       - name: Check out the pipelines
         id: pipelines
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -136,12 +35,6 @@ jobs:
           path: site
           ssh-key: ${{ secrets.PIPELINES_SSH_KEY }}
 
-      # **The message a failure gives is not the message anybody needs.** Over
-      # HTTPS `actions/checkout` says "Repository not found", which is true and
-      # points at the wrong thing; over SSH it says "Permission denied
-      # (publickey)", which names the mechanism and not the fix. Scoped to this
-      # step's own outcome rather than a bare `if: failure()`, which would
-      # attach this explanation to any earlier failure in the job.
       - name: Say why the pipelines could not be checked out
         if: failure() && steps.pipelines.outcome == 'failure'
         run: |
@@ -150,16 +43,6 @@ jobs:
           echo "::error title=If the log says only 'Permission denied (publickey)'::The key parsed but the server would not take it. The public half is missing from the site repository's Deploy keys page, or was revoked, or does not match this private half."
           echo "::error title=If the log says 'Repository not found'::No credential was used at all - the secret is unset or empty, so actions/checkout fell back to this workflow's GITHUB_TOKEN, which holds no grant on the site repository."
 
-      # **The orchestrator is in the site checkout above** (`site/pipeline/`),
-      # since 2026-09-26: the pipeline's code moved from the public
-      # realtime-data-repo to the private site repository, which this run
-      # already reads with its deploy key. `PIPELINE_ROOT` below is what lets
-      # it operate on this tree while living in that one.
-
-      # The last publish — the seed, the previous manifests, and the whole of
-      # what a held product falls back to. Tolerated missing exactly once:
-      # before the branch has ever been pushed, the orchestrator starts cold
-      # and says so.
       - name: Check out the last publish
         continue-on-error: true
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -175,18 +58,6 @@ jobs:
         with:
           node-version: '22'
 
-      # A broken orchestrator refuses to run rather than publishing something
-      # strange with green ticks. Run from the site's checkout, where the
-      # pipeline's code and its tests live.
-      # **What the fetcher needs, and why each one.** `requests` because
-      # ERDDAP 403s the default urllib user agent with no hint; `numpy` and
-      # `scipy` because the composite is a median over nine overpasses and
-      # ERDDAP's netCDF is binary — `scipy.io.netcdf_file` reads netCDF-3
-      # without pulling the whole netCDF4/HDF5 stack in. Pinned rather than
-      # floating: a fetcher whose numeric library changed under it publishes
-      # numbers, not an error. The pins live in the site's
-      # scripts/requirements-color.txt since 2026-09-27, where Dependabot reads
-      # them: inline here, requests 2.32.3 carried two advisories unflagged.
       - name: Install what the fetcher needs
         run: pip install --no-cache-dir -r site/scripts/requirements-color.txt
 
@@ -194,11 +65,6 @@ jobs:
         working-directory: site
         run: python3 pipeline/test_orchestrate.py
 
-      # The fetcher's own checks, run before it is allowed near a publish.
-      # They cost no network: the tile lattice, the band grouping, the
-      # encoding and the composite are all arithmetic, and each was
-      # mutation-tested when written. The band check exists because an
-      # inverted span published an 8 KB overview and exited 0.
       - name: Self-test the fetcher
         run: python3 site/scripts/fetch-ocean-color.py --self-test
 
@@ -213,28 +79,6 @@ jobs:
           PIPELINE_ROOT: ${{ github.workspace }}
         run: python3 site/pipeline/orchestrate.py plan --mode full
 
-      # **One Restore and one Save per `cache` name in products.toml.** Nothing
-      # loops here, because a matrix would need separate jobs — so this pair
-      # is the list a new product silently escapes, and the orchestrator's
-      # `plan` names any declared cache with neither step. That failure is
-      # invisible otherwise: a cache nothing restores is not an error, it is
-      # tiles rebuilt from scratch every run, with correct output.
-      #
-      # **`restore-keys` is the published hour's key, and nothing wider**
-      # (2026-10-14). The prefix restores of the light runs went with them on
-      # 2026-08-28; this is one complete key, the one the last publish's tiles
-      # are under, which `plan` names as `cache-held-<name>` whenever the
-      # probe names another hour, and leaves empty, and inert, when it does
-      # not. A miss on the probe's key restores what is published; the
-      # orchestrator keeps it aside while the steps run and puts it back if
-      # the product is held, so a hold after a probe that answered keeps its
-      # tiles.
-      # **One tier, and a cache hit here is worth more than in any sibling.**
-      # The chlorophyll tiles are the product rather than an optimization of
-      # it (D6): ~200 MB at the instrument's own 278 m. A cold build reads
-      # about 2 GB off ERDDAP to produce them, so restoring them when the
-      # composite has not moved is the difference between a run that costs
-      # seconds and one that costs minutes.
       - name: Restore chlorophyll tiles
         uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
@@ -272,8 +116,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # Only this job publishes, so only this job holds the write scopes. The
-    # build job runs `pip install` and the fetchers and holds neither.
     permissions:
       contents: write
       pages: write
@@ -287,9 +129,6 @@ jobs:
           name: branch-out
           path: branch-out
 
-      # `published` is an orphan branch, force-pushed each run: it is a
-      # snapshot of the last publish rather than a history, and banking every
-      # version of every grid forever is what filled the predecessor.
       - name: Publish the branch
         run: |
           cd branch-out
@@ -308,16 +147,6 @@ jobs:
         if: needs.build.outputs.deploy == 'true'
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
 
-
-  # **The R2 publish** (since 2026-09-24; the site pipeline's D12: R2
-  # stands on its own, and a comparison with Pages is a feature, never
-  # a requirement).
-  # The tree this run built, published to Cloudflare R2 under this
-  # repository's name — beside the Pages deploy, not after it: it needs only
-  # the build and its publish decision, so a Pages outage never stops it and
-  # a failure here never touches Pages. Only what changed is uploaded, and
-  # the bucket is then compared file by file with what the run built.
-  # `pipeline/publish_r2.py` in oceansensing.github.io has the rules.
   publish-r2:
     needs: build
     if: needs.build.outputs.deploy == 'true'
@@ -343,13 +172,11 @@ jobs:
       - name: Test the publish script
         run: python3 code/pipeline/test_publish_r2.py
 
-      - name: Publish to R2
+      - name: Publish to storage
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
-          # The CLI's newer default checksums are not every S3-compatible
-          # store's; ask for them only where an operation requires them.
           AWS_REQUEST_CHECKSUM_CALCULATION: when_required
           AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
         run: |

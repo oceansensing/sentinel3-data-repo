@@ -1,131 +1,17 @@
 # sentinel3-data-repo
 
-Sentinel-3 OLCI ocean color for the US East Coast — chlorophyll-a, and the
-harmful algal bloom indicators built on it — published as the map data
-contract's grid files.
+Chlorophyll-a over the US East Coast, Florida to Nova Scotia, from Copernicus
+Sentinel-3A and 3B OLCI, as a 7-day merged composite at the instrument's
+0.0025° (about 278 m) with each cell's age, for the oceansensing.org ocean
+map.
 
-**It publishes, since 2026-08-31.** `pipeline/products.toml` declares one
-product and the workflow builds it; the first green run put a 7-day merged
-composite at
-[`/map/chl-s3.json`](https://oceansensing.org/sentinel3-data-repo/map/chl-s3.json)
-with a native-resolution tile tier beside it, and the site draws it as
-*Chlorophyll-a (Sentinel-3)*.
-
-**The schedule is on, since 2026-09-19**: three attempts a day, at 03:41,
-11:41 and 19:41 UTC, the first to find a new overpass builds it and the
-others stop on the probe. (It had been left off for nineteen days after the
-two dispatched runs of 2026-08-31 met the condition for turning it on, and
-the map drew a 2026-08-29 overpass the whole time; `PLAN.md` has the
-record.)
-
-`PLAN.md` is the founding plan and running record — the upstream, the
-measurements, and what is open. `DECISIONS.md` indexes the dated one-way
-decisions. **Which document gets what, and what "update docs" means across every
-repository of this project, is the doctrine block at the top of `CLAUDE.md`** —
-the same text in each, held equal by the site's `check:docs`.
-
-## What it publishes
-
-Chlorophyll-a over the US East Coast, as a **7-day merged composite**:
-
-| | |
-| --- | --- |
-| source | NOAA CoastWatch, Copernicus Sentinel-3A **and** 3B OLCI, near-real-time |
-| datasets | `noaacwS3AOLCIchlaSectorFIDaily`, `noaacwS3BOLCIchlaSectorFIDaily` |
-| variable | `chlor_a`, mg m⁻³ |
-| native resolution | 0.0025° ≈ **278 m** |
-| extent | lat 29.81–45.19, lon −80.04 to −59.96 — Florida to Nova Scotia |
-| upstream cadence | one frame per day per satellite, ~14:30–15:20Z |
-| upstream latency | **2–5 days** — S-3A 2, S-3B 5, measured 2026-08-31 |
-| upstream history | **90-day rolling window** — not an archive |
-
-**The tributaries are mostly empty, and that is the upstream, measured
-2026-09-02.** On a clear day the Bay mouth carries a value in 76% of its
-pixels and the James River in 4.7%, because the OC4Me retrieval fails within
-about 5 km of every shore. Nothing here masks them; `PLAN.md` section 4 has
-the measurement and section 5 the alternatives.
-
-**Both open questions closed on 2026-08-31**, as `DECISIONS.md` D5 and D6.
-The window is **seven days**; the published product is **Sector FI whole at
-the instrument's own 0.0025°**, as a tile tier under a 0.05° overview, with
-values linear at two decimals.
-
-What that costs, measured the day it was decided:
-
-| | |
-| --- | --- |
-| overview | 402 × 308, **602 KB** |
-| per-cell age, same grid | **568 KB** |
-| tiles, native 0.0025° | **367 tiles, 233 MB** |
-| coverage of observable water | **76.8%** |
-| per-cell age of the freshest observation | median 2 d, p90 4 d, max 6 d |
-| upstream per build | ~1.7 GB, one native frame is 188 MB in 10.7 s |
-
-## Why a composite, in one table
-
-Coverage of everything ever observable, by composite length, measured
-2026-08-30 across 36 frames and five weeks (both satellites, 0.15° sampling,
-lat 30–45, lon −80 to −66):
-
-| composite | S-3A only | S-3B only | **merged A+B** |
-| --- | --- | --- | --- |
-| 1 day | 11.8% | 5.9% | **17.3%** |
-| 3 days | 31.6% | 18.1% | **43.5%** |
-| 5 days | 46.6% | 30.3% | **62.5%** |
-| **7 days** | 58.1% | 40.5% | **74.2%** |
-| 10 days | 73.5% | 55.9% | **86.6%** |
-| 14 days | 87.3% | 70.7% | **96.3%** |
-
-Single-day coverage over a Chesapeake box across six consecutive days was
-19.9%, 12.6%, **0.0%**, 7.4%, 7.2%, 0.5% — one day in six completely blank.
-That is what makes the composite a requirement rather than a preference, and
-merging the two satellites is worth roughly a doubling of the
-single-satellite window.
-
-The full method, and the caveat that late August is neither the cloudiest nor
-the clearest season on this coast, are in `PLAN.md`.
-
-## How it runs
-
-The same arrangement as `espc-model-repo`, and for the same reasons:
-
-- **No code here.** The orchestrator (the site's private `pipeline/`, since
-  2026-09-26), the fetchers and the published-file contract (`schema.ts`) all
-  come from `oceansensing.github.io`, checked out at run time, so a change to
-  any of them lands here on the next run rather than on any push here.
-- **This repository carries `pipeline/products.toml`** — what it publishes,
-  and nothing else executable.
-- **Its own cron and its own fault domain.** A cloudy fortnight over the
-  Atlantic must not hold back the currents, and HYCOM's outages must not hold
-  back this.
-
-- **Dispatch a run**: Actions → the publish workflow → Run workflow, or
-  `gh workflow run publish.yml --repo oceansensing/sentinel3-data-repo`. The
-  schedule runs it three times a day since 2026-09-19; a dispatch is for not
-  waiting.
-- **Read the health**: `curl -s https://oceansensing.org/sentinel3-data-repo/status/status.json | python3 -m json.tool`
-- **What it publishes**: `chl-s3.json` and `chlage-s3.json`, the 7-day
-  composite and its per-cell age, with a native-resolution tile tier beside
-  each — see `pipeline/products.toml`.
-
-The same tree also goes to a second host, Cloudflare R2, under this
-repository's name; the site's `pipeline/publish_r2.py` has the
-rules.
-
-## Structure
-
-```
-PLAN.md         the founding plan and running record; measurements live here
-CLAUDE.md       what must not be got wrong here, and the shared doc doctrine
-DECISIONS.md    dated one-way decisions, D1 onward
-pipeline/       products.toml — the one product and its two roots
-```
+Checked three times a day; each satellite's overpass arrives two to five days
+after it is seen.
 
 ## Licensing and attribution
 
 The published data derives from **Copernicus Sentinel-3 OLCI**, processed by
 EUMETSAT and served by **NOAA CoastWatch**. Any map drawing it owes that
-attribution, and the site's attribution control is where it goes. The
-upstream's own terms travel with the data: CoastWatch's ERDDAP states the
-data may be used and redistributed freely but is not intended for legal use
-and may contain inaccuracies.
+attribution. The upstream's own terms travel with the data: CoastWatch states
+the data may be used and redistributed freely but is not intended for legal
+use and may contain inaccuracies.
